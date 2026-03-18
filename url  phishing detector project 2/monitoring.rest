@@ -1,0 +1,59 @@
+### Test URL validation with your extension endpoint
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "https://www.google.com"
+}
+
+### Test with another URL
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "https://github.com"
+}
+
+### Test with invalid URL (no protocol)
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "www.example.com"
+}
+
+### Test with empty URL
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": ""
+}
+
+### Test OPTIONS preflight (for CORS)
+OPTIONS http://localhost:5000/api/extension/check
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+Origin: http://localhost:3000
+
+### Test URL validation with timing
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "https://www.google.com"
+}
+### Test with malformed URL (missing TLD)
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "https://google"
+}
+### Test with malformed URL (special characters)
+POST http://localhost:5000/api/extension/check
+Content-Type: application/json
+
+{
+    "url": "https://www.test@#$%.com"
+}

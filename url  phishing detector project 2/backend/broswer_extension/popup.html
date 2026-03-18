@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            width: 350px;
+            min-height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #121826;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .status {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-active {
+            background: rgba(6, 214, 160, 0.1);
+            color: #06d6a0;
+        }
+        
+        .status-inactive {
+            background: rgba(239, 71, 111, 0.1);
+            color: #ef476f;
+        }
+        
+        .toggle-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .toggle-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #121826;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .scan-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        #url-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        #url-input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #121826;
+            border: 2px solid #e9ecef;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4361ee;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4361ee;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .result-safe {
+            background: rgba(6, 214, 160, 0.1);
+            color: #06d6a0;
+            border: 2px solid #06d6a0;
+        }
+        
+        .result-danger {
+            background: rgba(239, 71, 111, 0.1);
+            color: #ef476f;
+            border: 2px solid #ef476f;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #06d6a0;
+            border-radius: 50%;
+        }
+        
+        .view-details-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .view-details-btn:hover {
+            background: #3a56d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+            <h1>PhishGuard</h1>
+        </div>
+        
+        <div class="status">
+            <div id="status-indicator" class="status-indicator status-active">
+                <div class="status-dot"></div>
+                <span>ACTIVE</span>
+            </div>
+            <p style="color: #6c757d; font-size: 13px; margin-top: 5px;">
+                Real-time phishing protection
+            </p>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <span>Real-time Protection</span>
+                <label class="switch">
+                    <input> type="checkbox" id="protection-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <p style="color: #6c757d; font-size: 12px; margin-top: 10px;">
+                Blocks phishing sites automatically
+            </p>
+        </div>
+        
+        <div class="scan-box">
+            <h3 style="color: #121826; margin-bottom: 15px; font-size: 16px;">
+                Manual Scan
+            </h3>
+            <input type="text" id="url-input" placeholder="https://example.com">
+            <button class="btn btn-primary" id="scan-btn">
+                Scan URL
+            </button>
+            <button class="btn btn-secondary" id="current-page-btn">
+                Scan Current Page
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing URL...</p>
+            </div>
+            
+            <div class="result" id="result">
+                <!-- Result will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="blocked-count">0</div>
+                <div class="stat-label">Blocked Today</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="scanned-count">0</div>
+                <div class="stat-label">Scanned Today</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by VirusTotal</p>
+            <p>University of Bedfordshire Project</p>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

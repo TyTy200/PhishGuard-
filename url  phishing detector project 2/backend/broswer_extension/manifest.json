@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard Security",
+  "version": "1.0",
+  "description": "Real-time phishing protection powered by VirusTotal Integration.",
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "storage",
+    "notifications",
+    "activeTab",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "http://localhost:5000/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PhishGuard"
+    
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["results.html", "results.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
